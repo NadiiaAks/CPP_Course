@@ -1,10 +1,35 @@
 ﻿#include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <climits>
+
+int readMinAttempts() 
+{
+    int minAttempts = INT_MAX;
+    std::ifstream file("min_attempts.txt");
+    if (file.is_open()) 
+    {
+        file >> minAttempts;
+        file.close();
+    }
+    return minAttempts;
+}
+
+void writeMinAttempts(int minAttempts) 
+{
+    std::ofstream file("min_attempts.txt");
+    if (file.is_open()) 
+    {
+        file << minAttempts;
+        file.close();
+    }
+}
 
 int main() 
 {
     int attempts = 0;
+    int minAttempts = readMinAttempts();
     std::srand(std::time(nullptr));
     int myRange;
     std::cout << "Give the guessing range: " << std::endl;
@@ -15,8 +40,8 @@ int main()
     {
         int myNum = 0;
 
-        std::cout << "\nEnter a number from 0 to " << myRange 
-            << ", enter -1 if you want finish game." << std::endl;
+        std::cout << "\nEnter a number from 0 to " << myRange
+            << ", enter -1 if you want to finish the game." << std::endl;
         std::cin >> myNum;
 
         if (myNum == -1) 
@@ -24,7 +49,7 @@ int main()
             std::cout << "\nExit" << std::endl;
             break;
         }
-        else if (myNum < 0 || myNum > myRange) {
+        {
             std::cout << "The entered number is outside the range of possible values!" << std::endl;
             continue;
         }
@@ -35,6 +60,15 @@ int main()
         {
             std::cout << "\nCongratulations! You guessed the number!" << std::endl;
             std::cout << "Number of attempts: " << attempts << std::endl;
+
+            if (attempts < minAttempts) 
+            {
+                minAttempts = attempts;
+                writeMinAttempts(minAttempts);
+            }
+
+            std::cout << "Your best result is: " << minAttempts << std::endl;
+
             attempts = 0;
             break;
         }
@@ -58,8 +92,10 @@ int main()
             }
             else 
             {
-                std::cout << "Your number is within acceptable range" << std::endl;
+                std::cout << "Your number is within an acceptable range" << std::endl;
             }
         }
     }
 }
+
+
